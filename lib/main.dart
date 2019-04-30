@@ -4,7 +4,8 @@ import 'package:hnews/src/hn_bloc.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'src/article.dart';
+//import 'src/article.dart';
+import 'package:hnews/src/article.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 void main() {
@@ -23,7 +24,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'Flutter Hacker News',
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
@@ -57,6 +58,27 @@ class _MyHomePageState extends State<MyHomePage> {
             children: snapshot.data.map(_buildItem).toList(),
           ),
         ),
+      bottomNavigationBar: BottomNavigationBar(
+        currentIndex: 0,
+        items: [
+          BottomNavigationBarItem(
+            title: Text('Top Stories'),
+            icon: Icon(Icons.arrow_drop_up),
+          ),
+          BottomNavigationBarItem(
+            title: Text('New Stories'),
+            icon: Icon(Icons.new_releases),
+          )
+        ],
+        onTap: (index) {
+          if (index == 0) {
+            widget.bloc.storiesType.add(StoriesType.topStories);
+          }
+          else {
+            widget.bloc.storiesType.add(StoriesType.newStories);
+          }
+        },
+      ),
     );
   }
 
