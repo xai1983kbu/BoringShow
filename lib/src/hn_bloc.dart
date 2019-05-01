@@ -1,4 +1,3 @@
-
 import 'dart:async';
 import 'dart:collection';
 
@@ -18,8 +17,10 @@ class HackerNewsBloc {
   Stream<UnmodifiableListView<Article>> get articles => _articlesSubject.stream;
 
   Sink<StoriesType> get storiesType => _storiesTypeController.sink;
-  
   final _storiesTypeController = StreamController<StoriesType>();
+
+  Stream<bool> get isLoading => _isLoadingSubject.stream;
+  final _isLoadingSubject = BehaviorSubject<bool>(seedValue: false);
 
 //  var _articles = <Article>[];
   var _articles = <Article>[];
@@ -50,10 +51,11 @@ class HackerNewsBloc {
     });
   }
 
-  _getArticlesAndUpdate(List<int> ids) {
-    _updateArticles(ids).then((_) {
-      _articlesSubject.add(UnmodifiableListView(_articles));
-    }).catchError((e) {print('error in _updateArticles'); print(e);}, );
+  _getArticlesAndUpdate(List<int> ids) async {
+    _isLoadingSubject.add(true);
+    await _updateArticles(ids);
+    _articlesSubject.add(UnmodifiableListView(_articles));
+    _isLoadingSubject.add(false);
   }
 
   Future<Article> _getArticle(int id) async {
